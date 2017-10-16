@@ -12,6 +12,7 @@ import com.amap.api.location.AMapLocationListener;
 import com.app.record.record2.model.GPS;
 import com.app.record.record2.network.ClientServer;
 import com.app.record.record2.network.ConnectedSuccessHandler;
+import com.app.record.record2.network.Handler.gps.gpsInfoHandler;
 
 import java.util.Date;
 
@@ -32,6 +33,8 @@ public class GetLocation{
    public AMapLocationListener mLocationListener = null;
     //#2 配置参数并启动定位
     public AMapLocationClientOption mLocationClientOption = null;
+    //gps信息处理事件
+    private gpsInfoHandler mGpsInfoHandler;
     /**
      * 构造函数
      */
@@ -40,6 +43,7 @@ public class GetLocation{
         mLocationListener = new myAmapLocationListener();
         mLocationClientOption = new AMapLocationClientOption();
         mLocationClient.setLocationListener(mLocationListener);
+        mGpsInfoHandler = new gpsInfoHandler();
     }
 
 
@@ -83,10 +87,14 @@ public class GetLocation{
 
         @Override
         public void onLocationChanged(AMapLocation aMapLocation) {
+            //Log.i("zgy","onLocationChanged");
             if(aMapLocation != null){
                 if (aMapLocation.getErrorCode() == 0){  //0表示定位成功，可在下面进行内容解析
                     GPS curGps = getGpsInfo(aMapLocation);
-                    Log.i("zgy","获取到的gps:"+curGps.getLatitude()+","+curGps.getLongitude()+","+curGps.getCountry()+","+curGps.getCity()+","+curGps.getBear());
+                    Log.i("zgy","获取到的gps:"+curGps.getLatitude()+","+curGps.getLongitude());
+                    mGpsInfoHandler.setGpsInfo(curGps);
+                    mGpsInfoHandler.channelActive();
+
                 }else { //定位失败，可通过ErrCode信息来确定失败的原因
                     Log.e("zgy","location Error,ErrCode:"+aMapLocation.getErrorCode()
                     +",errorInfo:"+aMapLocation.getErrorInfo());

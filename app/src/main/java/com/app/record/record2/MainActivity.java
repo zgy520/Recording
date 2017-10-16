@@ -29,15 +29,15 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        startService(new Intent(getBaseContext(),gpsService.class));  //开启服务
         new Thread(()->{
-            startService(new Intent(getBaseContext(),gpsService.class));  //开启服务
+            try {
+                new ClientServer().connect();  //开始连接netty
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }).start();
 
-        try {
-           //new ClientServer().connect();  //开始连接netty
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
         //GetLocation mGetLocation = new GetLocation(getApplicationContext());
         //mGetLocation.EnableLocation();
     }

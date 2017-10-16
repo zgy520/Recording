@@ -2,6 +2,8 @@ package com.app.record.record2.network;
 
 import android.util.Log;
 
+import com.app.record.record2.network.Handler.gps.gpsInfoHandler;
+
 import java.net.InetSocketAddress;
 
 import io.netty.bootstrap.Bootstrap;
@@ -30,11 +32,11 @@ public class ClientServer {
                     .handler(new ChannelInitializer<SocketChannel>() {
                         @Override
                         protected void initChannel(SocketChannel ch) throws Exception {
-                            ch.pipeline().addLast(new ConnectedSuccessHandler());
+                            ch.pipeline().addLast(new ConnectedSuccessHandler(),new gpsInfoHandler());
                         }
                     });
             ChannelFuture future = bootstrap.connect().sync();
-            future.channel().closeFuture().sync();
+            future.channel().closeFuture();
         }finally {
             group.shutdownGracefully().sync();
         }

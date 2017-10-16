@@ -4,6 +4,7 @@ import android.util.Log;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
+import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.util.CharsetUtil;
@@ -11,7 +12,7 @@ import io.netty.util.CharsetUtil;
 /**
  * Created by a4423 on 2017/10/15.
  */
-
+@ChannelHandler.Sharable
 public class ConnectedSuccessHandler extends SimpleChannelInboundHandler<ByteBuf> {
     private static final String TAG = "ConnectedSuccessHandler";
 
@@ -21,8 +22,9 @@ public class ConnectedSuccessHandler extends SimpleChannelInboundHandler<ByteBuf
     }
     @Override
     public void channelActive(ChannelHandlerContext ctx){
-        Log.i("zgy","与服务器连接成功");
+        Log.i("zgy","与服务器连接成功"+ctx.channel().id());
         ctx.writeAndFlush(Unpooled.copiedBuffer("连接成功后发送的消息", CharsetUtil.UTF_8));
+
     }
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx,Throwable cause){
