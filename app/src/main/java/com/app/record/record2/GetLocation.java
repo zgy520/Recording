@@ -91,9 +91,9 @@ public class GetLocation{
             if(aMapLocation != null){
                 if (aMapLocation.getErrorCode() == 0){  //0表示定位成功，可在下面进行内容解析
                     GPS curGps = getGpsInfo(aMapLocation);
-                    Log.i("zgy","获取到的gps:"+curGps.getLatitude()+","+curGps.getLongitude());
+
                     mGpsInfoHandler.setGpsInfo(curGps);
-                    mGpsInfoHandler.channelActive();
+                    mGpsInfoHandler.sendMsg();
 
                 }else { //定位失败，可通过ErrCode信息来确定失败的原因
                     Log.e("zgy","location Error,ErrCode:"+aMapLocation.getErrorCode()
