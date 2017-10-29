@@ -3,6 +3,8 @@ package com.app.record.record2.network.Codes.Encode;
 import android.util.Log;
 
 import com.app.record.record2.model.GPS;
+import com.zgy.message.request.RequestGPSMessage;
+import com.zgy.model.business.gps.Z_GPS;
 
 import java.nio.charset.Charset;
 
@@ -15,34 +17,26 @@ import io.netty.handler.codec.MessageToByteEncoder;
  * Created by a4423 on 2017/10/18.
  */
 
-public class gpstoByteEncoder extends MessageToByteEncoder<GPS> {
+public class gpstoByteEncoder extends MessageToByteEncoder<RequestGPSMessage> {
     private static final String TAG = "gpsToByteEncoder";
     @Override
-    protected void encode(ChannelHandlerContext ctx, GPS msg, ByteBuf out) throws Exception {
-        Log.i(TAG,"开始编码"+msg.getLongitude());
+    protected void encode(ChannelHandlerContext ctx, RequestGPSMessage msg, ByteBuf out) throws Exception {
+        Log.i(TAG,"开始编码");
         try{
-            /*out.writeInt(msg.getLocationType());
-            out.writeDouble(msg.getLatitude());
-            out.writeDouble(msg.getLongitude());
-            out.writeFloat(msg.getAccuracy());*/
-            out.writeInt(10);
-            /*
-            out.writeBytes(msg.getAddress().getBytes(Charset.forName("UTF-8")));
-            out.writeBytes(msg.getCountry().getBytes(Charset.forName("UTF-8")));
-            out.writeBytes(msg.getProvince().getBytes(Charset.forName("UTF-8")));
-            out.writeBytes(msg.getCity().getBytes(Charset.forName("UTF-8")));
-            out.writeBytes(msg.getDistrict().getBytes(Charset.forName("UTF-8")));
-            out.writeBytes(msg.getStreet().getBytes(Charset.forName("UTF-8")));
-            out.writeBytes(msg.getStreetNum().getBytes(Charset.forName("UTF-8")));
-            out.writeBytes(msg.getAdCode().getBytes(Charset.forName("UTF-8")));
-            out.writeBytes(msg.getAoiName().getBytes(Charset.forName("UTF-8")));
-            out.writeBytes(msg.getBuildingId().getBytes(Charset.forName("UTF-8")));
-            out.writeBytes(msg.getFloor().getBytes(Charset.forName("UTF-8")));
-            out.writeInt(msg.getGpsStatus());
-            out.writeBytes(msg.getLocationDetail().getBytes(Charset.forName("UTF-8")));
+            Z_GPS z_GPS = (Z_GPS)msg.getMessageBody();
+            out.writeInt(msg.getMessageHeader().getMessageType());
 
-            out.writeBytes(msg.getErrorInfo().getBytes(Charset.forName("UTF-8")));
-            out.writeInt(msg.getErrorCode());*/
+            out.writeInt(msg.getMessageLen());
+            out.writeShort(msg.getMessageHeader().getMessageSequence());
+            out.writeShort(msg.getMessageHeader().getMessageVersion());
+            out.writeDouble(z_GPS.getLatitude());
+            out.writeDouble(z_GPS.getLongitude());
+            out.writeFloat(z_GPS.getAccury());
+            out.writeDouble(z_GPS.getAltitude());
+            out.writeFloat(z_GPS.getSpeed());
+            out.writeFloat(z_GPS.getBear());
+            out.writeInt(z_GPS.getLocationType());
+            out.writeByte((int)z_GPS.getErrorCode());
             Log.i(TAG,"编码完毕");
         }catch (Exception ex){
             Log.e(TAG,ex.getMessage());

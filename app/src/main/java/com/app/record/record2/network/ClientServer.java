@@ -1,5 +1,6 @@
 package com.app.record.record2.network;
 
+import android.content.pm.ResolveInfo;
 import android.util.Log;
 
 import com.app.record.record2.network.Codes.Encode.gpstoByteEncoder;
@@ -15,6 +16,10 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
+import io.netty.handler.codec.serialization.ClassResolvers;
+import io.netty.handler.codec.serialization.ObjectDecoder;
+import io.netty.handler.codec.serialization.ObjectEncoder;
+import io.netty.handler.timeout.IdleStateHandler;
 
 /**
  * Created by a4423 on 2017/10/15.
@@ -34,11 +39,17 @@ public class ClientServer {
                     .handler(new ChannelInitializer<SocketChannel>() {
                         @Override
                         protected void initChannel(SocketChannel ch) throws Exception {
-                            ch.pipeline().addLast(new ConnectedSuccessHandler(),new gpstoByteEncoder(),new gpsInfoHandler());
+                            ch.pipeline().addLast(
+                                    new IdleStateHandler(3,4,5),
+                                    new gpstoByteEncoder(),
+                                    new ConnectedSuccessHandler(),
+                                    new gpsInfoHandler());
                         }
                     });
-            bootstrap.option(ChannelOption.CONNECT_TIMEOUT_MILLIS,5000)
-                     .option(ChannelOption.TCP_NODELAY,true);
+            /*bootstrap.option(ChannelOption.CONNECT_TIMEOUT_MILLIS,5000)
+                     .option(ChannelOption.TCP_NODELAY,true);*/
+            bootstrap.option(ChannelOption.SO_KEEPALIVE, true);
+            bootstrap.option(ChannelOption.SO_REUSEADDR,true);
             ChannelFuture future = bootstrap.connect().sync();
             future.channel().closeFuture().sync();
         }finally {

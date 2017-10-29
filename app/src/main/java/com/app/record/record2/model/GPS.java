@@ -1,15 +1,20 @@
 package com.app.record.record2.model;
 
+import java.io.Serializable;
+
 /**
  * Created by a4423 on 2017/10/9.
  */
 
-public class GPS {
+public class GPS implements Serializable {
+    private static final long serialVersionUID = 1L;
     private int locationType;  //获取当前定位结果来源，如网络定位结果，详见定位类型表
     private double latitude;  //维度
     private double longitude;  //经度
     private float accuracy;  //定位精度信息
     private float bear;  //方向角
+    private float speed;  //速度
+    private double altitude; //海拔高度
     private String address;  //地址
     private String country; //国家信息
     private String province; //省信息
@@ -193,5 +198,21 @@ public class GPS {
 
     public void setErrorCode(int errorCode) {
         this.errorCode = errorCode;
+    }
+
+    public float getSpeed() {
+        return speed;
+    }
+
+    public void setSpeed(float speed) {
+        this.speed = speed;
+    }
+
+    public double getAltitude() {
+        return altitude;
+    }
+
+    public void setAltitude(double altitude) {
+        this.altitude = altitude;
     }
 }

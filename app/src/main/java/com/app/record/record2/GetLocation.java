@@ -13,6 +13,7 @@ import com.app.record.record2.model.GPS;
 import com.app.record.record2.network.ClientServer;
 import com.app.record.record2.network.ConnectedSuccessHandler;
 import com.app.record.record2.network.Handler.gps.gpsInfoHandler;
+import com.zgy.model.business.gps.Z_GPS;
 
 import java.util.Date;
 
@@ -90,10 +91,15 @@ public class GetLocation{
             //Log.i("zgy","onLocationChanged");
             if(aMapLocation != null){
                 if (aMapLocation.getErrorCode() == 0){  //0表示定位成功，可在下面进行内容解析
-                    GPS curGps = getGpsInfo(aMapLocation);
+                    Z_GPS curGps = getGpsInfo(aMapLocation);
 
                     mGpsInfoHandler.setGpsInfo(curGps);
-                    mGpsInfoHandler.sendMsg();
+                    try{
+                        mGpsInfoHandler.sendMsg();
+                    }catch (Exception ex){
+
+                    }
+
 
                 }else { //定位失败，可通过ErrCode信息来确定失败的原因
                     Log.e("zgy","location Error,ErrCode:"+aMapLocation.getErrorCode()
@@ -107,16 +113,10 @@ public class GetLocation{
          * @param aMapLocation
          * @return
          */
-        private GPS getGpsInfo(AMapLocation aMapLocation){
-            GPS gpsInfo = new GPS();
-            gpsInfo.setLatitude(aMapLocation.getLatitude());
-            gpsInfo.setLongitude(aMapLocation.getLongitude());
-            gpsInfo.setAccuracy(aMapLocation.getAccuracy());
-            gpsInfo.setBear(aMapLocation.getBearing());
-            gpsInfo.setGpsStatus(aMapLocation.getGpsAccuracyStatus());
-            gpsInfo.setErrorCode(aMapLocation.getErrorCode());
-            gpsInfo.setErrorInfo(aMapLocation.getErrorInfo());
-            gpsInfo.setLocationDetail(aMapLocation.getLocationDetail());
+        private Z_GPS getGpsInfo(AMapLocation aMapLocation){
+            Z_GPS gpsInfo = new Z_GPS(aMapLocation.getLatitude(),aMapLocation.getLongitude(),aMapLocation.getAccuracy(),
+                                    aMapLocation.getAltitude(),aMapLocation.getSpeed(),aMapLocation.getBearing(),aMapLocation.getLocationType(),
+                        (byte)aMapLocation.getErrorCode());
             return gpsInfo;
         }
     }
